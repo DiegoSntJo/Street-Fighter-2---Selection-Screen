@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Street Fighter 2 - Select Screen</title>
+    <link rel="icon" href="media/fav.png">
+    <!-- CSS -->
+    <link rel="stylesheet" href="CSS/style.css">
+</head>
+<body>
+    <div id="musica">
+        <audio autoplay loop id="audio">
+            <source src="media/sfx/Character Select.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <div id="sfx"></div>
+
+    <div class="container">
+        <div class="player-select"></div><br>
+        <div class="mundo" id="mundo"></div><br>
+    </div>
+
+    <div class="selection">
+        <div class="char">
+            <div id="name"></div>
+            <div class="portraits" id="portraits"></div>
+        </div>
+        
+        <div class="menu">
+            <table>
+                <tbody>
+                    <tr>
+                        <td><button class="botao" id="ryu" onclick="selecionar(player = ryu)">1</button></td>
+                        <td><button class="botao" id="honda" onclick="selecionar(player = honda)">2</button></td>
+                        <td><button class="botao" id="blanka" onclick="selecionar(player = blanka)">3</button></td>
+                        <td><button class="botao" id="guile" onclick="selecionar(player = guile)">4</button></td>
+                        <td><button class="botao" id="balrog" onclick="selecionar(player = balrog)">5</button></td>
+                        <td><button class="botao" id="vega" onclick="selecionar(player = vega)">6</button></td>
+                    </tr>
+                    <tr>
+                        <td><button class="botao" id="ken" onclick="selecionar(player = ken)">7</button></td>
+                        <td><button class="botao" id="chunli" onclick="selecionar(player = chunli)">8</button></td>
+                        <td><button class="botao" id="zangief" onclick="selecionar(player = zangief)">9</button></td>
+                        <td><button class="botao" id="dhalsim" onclick="selecionar(player = dhalsim)">10</button></td>
+                        <td><button class="botao" id="sagat" onclick="selecionar(player = sagat)">11</button></td>
+                        <td><button class="botao" id="bison" onclick="selecionar(player = bison)">12</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <div class="lobby" id="lobby"></div>
+    </div>
+
+    <div class="container">
+        <div class="reset">
+            <button onclick="reset()">Reset</button>
+        </div>
+    </div>
+
+    <!--RODAPÉ-->
+    <footer>
+        <div class="rodape">
+            <p>Todos os direitos reservados à Capcom ©</p>
+        </div>
+    </footer>
+</body>
+<!-- JAVASCRIPT -->
+<script  src="JS/script.js"></script>
+</html>
