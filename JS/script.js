@@ -1,475 +1,258 @@
-//PERSONAGENS
-var ryu = document.getElementById("ryu");
-var honda = document.getElementById("honda");
-var blanka = document.getElementById("blanka");
-var guile = document.getElementById("guile");
-var balrog = document.getElementById("balrog");
-var vega = document.getElementById("vega");
-var ken = document.getElementById("ken");
-var chunli = document.getElementById("chunli");
-var zangief = document.getElementById("zangief");
-var dhalsim = document.getElementById("dhalsim");
-var sagat = document.getElementById("sagat");
-var bison = document.getElementById("bison");
+// ============================================
+// STREET FIGHTER 2 - SELECTION SCREEN
+// Versão refatorada e otimizada (ES6)
+// ============================================
 
-//SOM
-var player = "" ;
-var audio = document.getElementById("audio");
-audio.volume = 0.35;
+// Dados dos personagens
+const CHARACTERS = {
+    ryu: { name: 'ryu', image: '1.png', background: '1.png' },
+    honda: { name: 'honda', image: '2.png', background: '2.png' },
+    blanka: { name: 'blanka', image: '3.png', background: '3.png' },
+    guile: { name: 'guile', image: '4.png', background: '4.png' },
+    balrog: { name: 'balrog', image: '5.png', background: '5.png' },
+    vega: { name: 'vega', image: '6.png', background: '6.png' },
+    ken: { name: 'ken', image: '7.png', background: '7.png' },
+    chunli: { name: 'chunli', image: '8.png', background: '8.png' },
+    zangief: { name: 'zangief', image: '9.png', background: '9.png' },
+    dhalsim: { name: 'dhalsim', image: '10.png', background: '10.png' },
+    sagat: { name: 'sagat', image: '11.png', background: '11.png' },
+    bison: { name: 'bison', image: '12.png', background: 'world.png' }
+};
 
-//ANIMÇÕES COM MOUSE
-//MOUSE ON
-ryu.addEventListener("mouseover", function(){
-    if(player == ""){
-        var addChar = "<img class='choosen' src='media/"+ryu.innerHTML+".png'><br>";
-        var addPortrait = "<img class='choosen' src='media/portraits/"+ryu.innerHTML+".png'><br>";
-        var addName = "<img class='name' src='media/names/"+ryu.innerHTML+".png'><br>";
-        var exibirChar = document.getElementById("lobby");
-        var exibirPortrait = document.getElementById("portraits");
-        var exibirName = document.getElementById("name");
-        exibirChar.innerHTML = addChar;
-        exibirPortrait.innerHTML = addPortrait;
-        exibirName.innerHTML = addName;
+// Estado da aplicação
+const state = {
+    selectedPlayer: null,
+    musicElement: document.getElementById('musica'),
+    sfxElement: document.getElementById('sfx'),
+    lobbyElement: document.getElementById('lobby'),
+    portraitElement: document.getElementById('portraits'),
+    nameElement: document.getElementById('name'),
+    worldElement: document.getElementById('mundo'),
+    mainAudio: document.getElementById('audio'),
+    focusedCharacterIndex: 0
+};
 
+// Array ordenado de personagens (2 linhas x 6 colunas)
+const CHARACTER_ORDER = [
+    'ryu', 'honda', 'blanka', 'guile', 'balrog', 'vega',      // Linha 1
+    'ken', 'chunli', 'zangief', 'dhalsim', 'sagat', 'bison'   // Linha 2
+];
 
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/1.png)";
+// Configuração inicial
+state.mainAudio.volume = 0.35;
 
-        var sfx = document.getElementById("sfx");
-        sfx.innerHTML = "<audio autoplay><source src='media/sfx/selection.ogg' type='audio/ogg'></audio>";
+// ============================================
+// FUNÇÕES UTILITÁRIAS
+// ============================================
+
+function updateDisplay(character) {
+    const charName = character.name;
+    state.lobbyElement.innerHTML = `<img class='choosen' src='media/${character.image}' alt='${charName}'>`;
+    state.portraitElement.innerHTML = `<img class='choosen' src='media/portraits/${character.image}' alt='${charName}'>`;
+    state.nameElement.innerHTML = `<img class='name' src='media/names/${character.image}' alt='Nome: ${charName}'>`;
+}
+
+function updateBackground(backgroundImage) {
+    state.worldElement.style.backgroundImage = `url(media/backgrounds/${backgroundImage})`;
+}
+
+function clearDisplay() {
+    state.lobbyElement.innerHTML = '';
+    state.portraitElement.innerHTML = '';
+    state.nameElement.innerHTML = '';
+}
+
+function playSound(soundFile) {
+    state.sfxElement.innerHTML = `<audio autoplay><source src='media/sfx/${soundFile}' type='audio/ogg'></audio>`;
+}
+
+function playMusic(musicFile) {
+    state.musicElement.innerHTML = `<audio autoplay loop id='audio'><source src='${musicFile}' type='audio/mpeg'></audio>`;
+    state.mainAudio = document.getElementById('audio');
+    state.mainAudio.volume = 0.35;
+}
+
+// ============================================
+// EVENT HANDLERS
+// ============================================
+
+function onCharacterHover(character) {
+    if (state.selectedPlayer === null) {
+        updateDisplay(character);
+        updateBackground(character.background);
+        playSound('selection.ogg');
     }
-})
+}
 
-honda.addEventListener("mouseover", function(){
-    if(player == ""){
-        var addChar = "<img class='choosen' src='media/"+honda.innerHTML+".png'><br>";
-        var addPortrait = "<img class='choosen' src='media/portraits/"+honda.innerHTML+".png'><br>";
-        var addName = "<img class='name' src='media/names/"+honda.innerHTML+".png'><br>";
-        var exibirChar = document.getElementById("lobby");
-        var exibirPortrait = document.getElementById("portraits");
-        var exibirName = document.getElementById("name");
-        exibirChar.innerHTML = addChar;
-        exibirPortrait.innerHTML = addPortrait;
-        exibirName.innerHTML = addName;
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/2.png)";
-
-        var sfx = document.getElementById("sfx");
-        sfx.innerHTML = "<audio autoplay><source src='media/sfx/selection.ogg' type='audio/ogg'></audio>";
+function onCharacterLeave() {
+    if (state.selectedPlayer === null) {
+        clearDisplay();
+        updateBackground('world.png');
     }
-})
+}
 
-blanka.addEventListener("mouseover", function(){
-    if(player == ""){
-        var addChar = "<img class='choosen' src='media/"+blanka.innerHTML+".png'><br>";
-        var addPortrait = "<img class='choosen' src='media/portraits/"+blanka.innerHTML+".png'><br>";
-        var addName = "<img class='name' src='media/names/"+blanka.innerHTML+".png'><br>";
-        var exibirChar = document.getElementById("lobby");
-        var exibirPortrait = document.getElementById("portraits");
-        var exibirName = document.getElementById("name");
-        exibirChar.innerHTML = addChar;
-        exibirPortrait.innerHTML = addPortrait;
-        exibirName.innerHTML = addName;
+function onCharacterSelect(character) {
+    state.selectedPlayer = character;
+    updateDisplay(character);
+    updateBackground(character.background);
+    playSound('choosen.ogg');
+    
+    // Sequência de áudio sincronizada
+    setTimeout(() => {
+        playMusic(`media/sfx/${character.image.replace('.png', '.mp3')}`);
+    }, 1000);
+    
+    setTimeout(() => {
+        playMusic('media/sfx/Start%20Battle.mp3');
+    }, 2000);
+    
+    setTimeout(() => {
+        playMusic(`media/themes/${character.image.replace('.png', '.mp3')}`);
+    }, 6000);
+}
 
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/3.png)";
-
-        var sfx = document.getElementById("sfx");
-        sfx.innerHTML = "<audio autoplay><source src='media/sfx/selection.ogg' type='audio/ogg'></audio>";
-    }
-})
-
-guile.addEventListener("mouseover", function(){
-    if(player == ""){
-        var addChar = "<img class='choosen' src='media/"+guile.innerHTML+".png'><br>";
-        var addPortrait = "<img class='choosen' src='media/portraits/"+guile.innerHTML+".png'><br>";
-        var addName = "<img class='name' src='media/names/"+guile.innerHTML+".png'><br>";
-        var exibirChar = document.getElementById("lobby");
-        var exibirPortrait = document.getElementById("portraits");
-        var exibirName = document.getElementById("name");
-        exibirChar.innerHTML = addChar;
-        exibirPortrait.innerHTML = addPortrait;
-        exibirName.innerHTML = addName;
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/4.png)";
-
-        var sfx = document.getElementById("sfx");
-        sfx.innerHTML = "<audio autoplay><source src='media/sfx/selection.ogg' type='audio/ogg'></audio>";
-    }
-})
-
-balrog.addEventListener("mouseover", function(){
-    if(player == ""){
-        var addChar = "<img class='choosen' src='media/"+balrog.innerHTML+".png'><br>";
-        var addPortrait = "<img class='choosen' src='media/portraits/"+balrog.innerHTML+".png'><br>";
-        var addName = "<img class='name' src='media/names/"+balrog.innerHTML+".png'><br>";
-        var exibirChar = document.getElementById("lobby");
-        var exibirPortrait = document.getElementById("portraits");
-        var exibirName = document.getElementById("name");
-        exibirChar.innerHTML = addChar;
-        exibirPortrait.innerHTML = addPortrait;
-        exibirName.innerHTML = addName;
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/5.png)";
-
-        var sfx = document.getElementById("sfx");
-        sfx.innerHTML = "<audio autoplay><source src='media/sfx/selection.ogg' type='audio/ogg'></audio>";
-    }
-})
-
-vega.addEventListener("mouseover", function(){
-    if(player == ""){
-        var addChar = "<img class='choosen' src='media/"+vega.innerHTML+".png'><br>";
-        var addPortrait = "<img class='choosen' src='media/portraits/"+vega.innerHTML+".png'><br>";
-        var addName = "<img class='name' src='media/names/"+vega.innerHTML+".png'><br>";
-        var exibirChar = document.getElementById("lobby");
-        var exibirPortrait = document.getElementById("portraits");
-        var exibirName = document.getElementById("name");
-        exibirChar.innerHTML = addChar;
-        exibirPortrait.innerHTML = addPortrait;
-        exibirName.innerHTML = addName;
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/6.png)";
-
-        var sfx = document.getElementById("sfx");
-        sfx.innerHTML = "<audio autoplay><source src='media/sfx/selection.ogg' type='audio/ogg'></audio>";
-    }
-})
-
-ken.addEventListener("mouseover", function(){
-    if(player == ""){
-        var addChar = "<img class='choosen' src='media/"+ken.innerHTML+".png'><br>";
-        var addPortrait = "<img class='choosen' src='media/portraits/"+ken.innerHTML+".png'><br>";
-        var addName = "<img class='name' src='media/names/"+ken.innerHTML+".png'><br>";
-        var exibirChar = document.getElementById("lobby");
-        var exibirPortrait = document.getElementById("portraits");
-        var exibirName = document.getElementById("name");
-        exibirChar.innerHTML = addChar;
-        exibirPortrait.innerHTML = addPortrait;
-        exibirName.innerHTML = addName;
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/7.png)";
-
-        var sfx = document.getElementById("sfx");
-        sfx.innerHTML = "<audio autoplay><source src='media/sfx/selection.ogg' type='audio/ogg'></audio>";
-    }
-})
-
-chunli.addEventListener("mouseover", function(){
-    if(player == ""){
-        var addChar = "<img class='choosen' src='media/"+chunli.innerHTML+".png'><br>";
-        var addPortrait = "<img class='choosen' src='media/portraits/"+chunli.innerHTML+".png'><br>";
-        var addName = "<img class='name' src='media/names/"+chunli.innerHTML+".png'><br>";
-        var exibirChar = document.getElementById("lobby");
-        var exibirPortrait = document.getElementById("portraits");
-        var exibirName = document.getElementById("name");
-        exibirChar.innerHTML = addChar;
-        exibirPortrait.innerHTML = addPortrait;
-        exibirName.innerHTML = addName;
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/8.png)";
-
-        var sfx = document.getElementById("sfx");
-        sfx.innerHTML = "<audio autoplay><source src='media/sfx/selection.ogg' type='audio/ogg'></audio>";
-    }
-})
-
-zangief.addEventListener("mouseover", function(){
-    if(player == ""){
-        var addChar = "<img class='choosen' src='media/"+zangief.innerHTML+".png'><br>";
-        var addPortrait = "<img class='choosen' src='media/portraits/"+zangief.innerHTML+".png'><br>";
-        var addName = "<img class='name' src='media/names/"+zangief.innerHTML+".png'><br>";
-        var exibirChar = document.getElementById("lobby");
-        var exibirPortrait = document.getElementById("portraits");
-        var exibirName = document.getElementById("name");
-        exibirChar.innerHTML = addChar;
-        exibirPortrait.innerHTML = addPortrait;
-        exibirName.innerHTML = addName;
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/9.png)";
-
-        var sfx = document.getElementById("sfx");
-        sfx.innerHTML = "<audio autoplay><source src='media/sfx/selection.ogg' type='audio/ogg'></audio>";
-    }
-})
-
-dhalsim.addEventListener("mouseover", function(){
-    if(player == ""){
-        var addChar = "<img class='choosen' src='media/"+dhalsim.innerHTML+".png'><br>";
-        var addPortrait = "<img class='choosen' src='media/portraits/"+dhalsim.innerHTML+".png'><br>";
-        var addName = "<img class='name' src='media/names/"+dhalsim.innerHTML+".png'><br>";
-        var exibirChar = document.getElementById("lobby");
-        var exibirPortrait = document.getElementById("portraits");
-        var exibirName = document.getElementById("name");
-        exibirChar.innerHTML = addChar;
-        exibirPortrait.innerHTML = addPortrait;
-        exibirName.innerHTML = addName;
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/10.png)";
-
-        var sfx = document.getElementById("sfx");
-        sfx.innerHTML = "<audio autoplay><source src='media/sfx/selection.ogg' type='audio/ogg'></audio>";
-    }
-})
-
-sagat.addEventListener("mouseover", function(){
-    if(player == ""){
-        var addChar = "<img class='choosen' src='media/"+sagat.innerHTML+".png'><br>";
-        var addPortrait = "<img class='choosen' src='media/portraits/"+sagat.innerHTML+".png'><br>";
-        var addName = "<img class='name' src='media/names/"+sagat.innerHTML+".png'><br>";
-        var exibirChar = document.getElementById("lobby");
-        var exibirPortrait = document.getElementById("portraits");
-        var exibirName = document.getElementById("name");
-        exibirChar.innerHTML = addChar;
-        exibirPortrait.innerHTML = addPortrait;
-        exibirName.innerHTML = addName;
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/11.png)";
-
-        var sfx = document.getElementById("sfx");
-        sfx.innerHTML = "<audio autoplay><source src='media/sfx/selection.ogg' type='audio/ogg'></audio>";
-    }
-})
-
-bison.addEventListener("mouseover", function(){
-    if(player == ""){
-        var addChar = "<img class='choosen' src='media/"+bison.innerHTML+".png'><br>";
-        var addPortrait = "<img class='choosen' src='media/portraits/"+bison.innerHTML+".png'><br>";
-        var addName = "<img class='name' src='media/names/"+bison.innerHTML+".png'><br>";
-        var exibirChar = document.getElementById("lobby");
-        var exibirPortrait = document.getElementById("portraits");
-        var exibirName = document.getElementById("name");
-        exibirChar.innerHTML = addChar;
-        exibirPortrait.innerHTML = addPortrait;
-        exibirName.innerHTML = addName;
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/world.png)";
-
-        var sfx = document.getElementById("sfx");
-        sfx.innerHTML = "<audio autoplay><source src='media/sfx/selection.ogg' type='audio/ogg'></audio>";
-    }
-})
-
-
-//MOUSE OFF
-ryu.addEventListener("mouseleave", function(){
-    if(player == ""){
-        var remover = document.getElementById("lobby");
-        var removerPortrait = document.getElementById("portraits");
-        var removerName = document.getElementById("name");
-        remover.innerHTML = "";
-        removerPortrait.innerHTML = "";
-        removerName.innerHTML = "";
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/world.png)";
-    }
-})
-
-honda.addEventListener("mouseleave", function(){
-    if(player == ""){
-        var remover = document.getElementById("lobby");
-        var removerPortrait = document.getElementById("portraits");
-        var removerName = document.getElementById("name");
-        remover.innerHTML = "";
-        removerPortrait.innerHTML = "";
-        removerName.innerHTML = "";
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/world.png)";
-    }
-})
-
-blanka.addEventListener("mouseleave", function(){
-    if(player == ""){
-        var remover = document.getElementById("lobby");
-        var removerPortrait = document.getElementById("portraits");
-        var removerName = document.getElementById("name");
-        remover.innerHTML = "";
-        removerPortrait.innerHTML = "";
-        removerName.innerHTML = "";
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/world.png)";
-    }
-})
-
-guile.addEventListener("mouseleave", function(){
-    if(player == ""){
-        var remover = document.getElementById("lobby");
-        var removerPortrait = document.getElementById("portraits");
-        var removerName = document.getElementById("name");
-        remover.innerHTML = "";
-        removerPortrait.innerHTML = "";
-        removerName.innerHTML = "";
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/world.png)";
-    }
-})
-
-balrog.addEventListener("mouseleave", function(){
-    if(player == ""){
-        var remover = document.getElementById("lobby");
-        var removerPortrait = document.getElementById("portraits");
-        var removerName = document.getElementById("name");
-        remover.innerHTML = "";
-        removerPortrait.innerHTML = "";
-        removerName.innerHTML = "";
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/world.png)";
-    }
-})
-
-vega.addEventListener("mouseleave", function(){
-    if(player == ""){
-        var remover = document.getElementById("lobby");
-        var removerPortrait = document.getElementById("portraits");
-        var removerName = document.getElementById("name");
-        remover.innerHTML = "";
-        removerPortrait.innerHTML = "";
-        removerName.innerHTML = "";
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/world.png)";
-    }
-})
-
-ken.addEventListener("mouseleave", function(){
-    if(player == ""){
-        var remover = document.getElementById("lobby");
-        var removerPortrait = document.getElementById("portraits");
-        var removerName = document.getElementById("name");
-        remover.innerHTML = "";
-        removerPortrait.innerHTML = "";
-        removerName.innerHTML = "";
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/world.png)";
-    }
-})
-
-chunli.addEventListener("mouseleave", function(){
-    if(player == ""){
-        var remover = document.getElementById("lobby");
-        var removerPortrait = document.getElementById("portraits");
-        var removerName = document.getElementById("name");
-        remover.innerHTML = "";
-        removerPortrait.innerHTML = "";
-        removerName.innerHTML = "";
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/world.png)";
-    }
-})
-
-zangief.addEventListener("mouseleave", function(){
-    if(player == ""){
-        var remover = document.getElementById("lobby");
-        var removerPortrait = document.getElementById("portraits");
-        var removerName = document.getElementById("name");
-        remover.innerHTML = "";
-        removerPortrait.innerHTML = "";
-        removerName.innerHTML = "";
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/world.png)";
-    }
-})
-
-dhalsim.addEventListener("mouseleave", function(){
-    if(player == ""){
-        var remover = document.getElementById("lobby");
-        var removerPortrait = document.getElementById("portraits");
-        var removerName = document.getElementById("name");
-        remover.innerHTML = "";
-        removerPortrait.innerHTML = "";
-        removerName.innerHTML = "";
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/world.png)";
-    }
-})
-
-sagat.addEventListener("mouseleave", function(){
-    if(player == ""){
-        var remover = document.getElementById("lobby");
-        var removerPortrait = document.getElementById("portraits");
-        var removerName = document.getElementById("name");
-        remover.innerHTML = "";
-        removerPortrait.innerHTML = "";
-        removerName.innerHTML = "";
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/world.png)";
-    }
-})
-
-bison.addEventListener("mouseleave", function(){
-    if(player == ""){
-        var remover = document.getElementById("lobby");
-        var removerPortrait = document.getElementById("portraits");
-        var removerName = document.getElementById("name");
-        remover.innerHTML = "";
-        removerPortrait.innerHTML = "";
-        removerName.innerHTML = "";
-
-        var getMundo = document.getElementById("mundo");
-        getMundo.style.backgroundImage = "url(media/backgrounds/world.png)";
-    }
-})
-
-//HARD RESET
-function reset (){
+function resetGame() {
     history.go(0);
 }
 
-//SELECIONAR
-function escolheu(){
-    var country = document.getElementById("musica");
-    country.innerHTML = "<audio autoplay><source src='media/sfx/"+player.innerHTML+".mp3' type='audio/mpeg'></audio>";
+// ============================================
+// NAVEGAÇÃO COM SETAS DO TECLADO
+// ============================================
+
+function updateFocusedCharacter(newIndex) {
+    // Remove classe do anterior
+    const oldButton = document.querySelector(`[data-character="${CHARACTER_ORDER[state.focusedCharacterIndex]}"]`);
+    if (oldButton) {
+        oldButton.parentElement.classList.remove('keyboard-focus');
+    }
+    
+    // Atualiza índice
+    state.focusedCharacterIndex = newIndex;
+    const characterName = CHARACTER_ORDER[newIndex];
+    const character = CHARACTERS[characterName];
+    
+    // Adiciona classe ao novo
+    const newButton = document.querySelector(`[data-character="${characterName}"]`);
+    if (newButton) {
+        newButton.parentElement.classList.add('keyboard-focus');
+    }
+    
+    // Mostra preview (como hover)
+    if (state.selectedPlayer === null) {
+        onCharacterHover(character);
+    }
 }
 
-function vs(){
-    var tocar = document.getElementById("musica");
-    tocar.innerHTML = "<audio autoplay><source src='media/sfx/Start Battle.mp3' type='audio/mpeg'></audio>";
+function navigateKeyboard(direction) {
+    if (state.selectedPlayer !== null) return; // Bloquia se já selecionado
+    
+    let newIndex = state.focusedCharacterIndex;
+    
+    switch(direction) {
+        case 'up':
+            newIndex = (newIndex - 6 + 12) % 12;
+            break;
+        case 'down':
+            newIndex = (newIndex + 6) % 12;
+            break;
+        case 'left':
+            if (newIndex % 6 === 0) {
+                newIndex = newIndex + 5; // Volta pro final da linha
+            } else {
+                newIndex = newIndex - 1;
+            }
+            break;
+        case 'right':
+            if (newIndex % 6 === 5) {
+                newIndex = newIndex - 5; // Volta pro início da linha
+            } else {
+                newIndex = newIndex + 1;
+            }
+            break;
+    }
+    
+    updateFocusedCharacter(newIndex);
 }
 
-function charEscolhido(){
-    var tocar = document.getElementById("musica");
-    tocar.innerHTML = "<audio autoplay id='audio'><source src='media/themes/"+player.innerHTML+".mp3' type='audio/mpeg'></audio>";
-    var audio = document.getElementById("audio");
-    audio.volume = 0.35;
-}
+// ============================================
+// INICIALIZAÇÃO - EVENT DELEGATION
+// ============================================
 
-function selecionar (){
-    var addChar = "<img class='choosen' src='media/"+player.innerHTML+".png'><br>";
-    var addPortrait = "<img class='choosen' src='media/portraits/"+player.innerHTML+".png'><br>";
-    var addName = "<img class='name' src='media/names/"+player.innerHTML+".png'><br>";
-    var exibirChar = document.getElementById("lobby");
-    var exibirPortrait = document.getElementById("portraits");
-    var exibirName = document.getElementById("name");
-    exibirChar.innerHTML = addChar;
-    exibirPortrait.innerHTML = addPortrait;
-    exibirName.innerHTML = addName;
+document.addEventListener('DOMContentLoaded', function() {
+    const buttons = document.querySelectorAll('.botao');
+    
+    buttons.forEach(button => {
+        const characterName = button.getAttribute('data-character');
+        const character = CHARACTERS[characterName];
+        
+        if (character) {
+            // Hover (mouse enter)
+            button.addEventListener('mouseover', () => onCharacterHover(character));
+            
+            // Hover out (mouse leave)
+            button.addEventListener('mouseleave', onCharacterLeave);
+            
+            // Click (seleção)
+            button.addEventListener('click', () => onCharacterSelect(character));
+            
+            // Suporte a teclado (Enter/Space)
+            button.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    onCharacterSelect(character);
+                }
+            });
+        }
+    });
+    
+    // Controlar visibilidade do keyboard-focus quando houver hover em qualquer botão
+    const table = document.querySelector('table');
+    if (table) {
+        table.addEventListener('mouseover', () => {
+            table.classList.add('mouse-hovering');
+        });
+        
+        table.addEventListener('mouseleave', () => {
+            table.classList.remove('mouse-hovering');
+        });
+    }
+    
+    // Botão de Reset
+    const resetButton = document.querySelector('.reset button');
+    if (resetButton) {
+        resetButton.addEventListener('click', resetGame);
+    }
+    
+    // Navegação por teclado (setas + Enter)
+    document.addEventListener('keydown', (e) => {
+        if (state.selectedPlayer !== null) return; // Bloquia após seleção
+        
+        switch(e.key) {
+            case 'ArrowUp':
+                e.preventDefault();
+                navigateKeyboard('up');
+                break;
+            case 'ArrowDown':
+                e.preventDefault();
+                navigateKeyboard('down');
+                break;
+            case 'ArrowLeft':
+                e.preventDefault();
+                navigateKeyboard('left');
+                break;
+            case 'ArrowRight':
+                e.preventDefault();
+                navigateKeyboard('right');
+                break;
+            case 'Enter':
+                e.preventDefault();
+                const focusedCharacter = CHARACTERS[CHARACTER_ORDER[state.focusedCharacterIndex]];
+                onCharacterSelect(focusedCharacter);
+                break;
+        }
+    });
+    
+    // Inicializa foco no primeiro personagem
+    updateFocusedCharacter(0);
+});
 
-    var getMundo = document.getElementById("mundo");
-    getMundo.style.backgroundImage = "url(media/backgrounds/"+player.innerHTML+".png)";
-
-    var sfx = document.getElementById("sfx");
-    sfx.innerHTML = "<audio autoplay><source src='media/sfx/choosen.ogg' type='audio/ogg'></audio>";
-    setTimeout(escolheu, 1000);
-    setTimeout(vs, 2000);
-    setTimeout(charEscolhido, 6000);
-}
